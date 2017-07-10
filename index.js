@@ -17,6 +17,10 @@ io.on('connection', function(socket){
     io.emit('chat message', msg.message);
   });
 
+  socket.on('userTyping', function(user) {
+    io.emit('userTyping', user);
+  });
+
   socket.on('newUser', function(user){
     currentUser = user.username;
     var index = userList.indexOf(currentUser);
@@ -32,16 +36,7 @@ io.on('connection', function(socket){
   })
 
   socket.on('disconnect', function(){
-    var index = userList.indexOf(currentUser);
-
-    console.log(currentUser + " has disconnected")
-    /*io.emit('chat message', currentUser + " has disconnected!");
-
-    if (index > -1) {
-        userList.splice(index, 1);
-    }
-
-    io.emit('userList update', userList);*/
+   console.log(currentUser + " has disconnected")
   });
   
 });
