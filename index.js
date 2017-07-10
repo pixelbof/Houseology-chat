@@ -10,7 +10,6 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  socket.emit('welcome', { id: socket.id });
 
   socket.on('chat message', function(msg){
     io.emit('chat message', msg.message);
@@ -28,12 +27,15 @@ io.on('connection', function(socket){
   })
 
   socket.on('disconnect', function(){
-    var index = array.indexOf(currentUser);
+    var index = userList.indexOf(currentUser);
 
     if (index > -1) {
-        array.splice(index, 1);
+        userList.splice(index, 1);
     }
+
+    io.emit('userList update', userList);
   });
+
 });
 
 
