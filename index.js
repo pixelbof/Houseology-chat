@@ -31,6 +31,8 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     var index = userList.indexOf(currentUser);
 
+    console.log(currentUser + " has disconnected");
+
     if (index > -1) {
         userList.splice(index, 1);
     }
