@@ -21,7 +21,7 @@ io.on('connection', function(socket){
     currentUser = user.username;
     var index = userList.indexOf(currentUser);
 
-    if (index > -1) {
+    if (index <= -1) {
         userList.push(user.username);
         io.emit('userList update', userList);
     }
