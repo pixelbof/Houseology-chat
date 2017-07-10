@@ -11,6 +11,8 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
 
+  socket.emit('welcome');
+
   socket.on('chat message', function(msg){
     io.emit('chat message', msg.message);
   });
@@ -35,7 +37,7 @@ io.on('connection', function(socket){
 
     io.emit('userList update', userList);
   });
-
+  
 });
 
 
