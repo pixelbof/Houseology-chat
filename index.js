@@ -35,13 +35,13 @@ io.on('connection', function(socket){
     var index = userList.indexOf(currentUser);
 
     console.log(currentUser + " has disconnected")
-    io.emit('chat message', currentUser + " has disconnected!");
+    /*io.emit('chat message', currentUser + " has disconnected!");
 
     if (index > -1) {
         userList.splice(index, 1);
     }
 
-    io.emit('userList update', userList);
+    io.emit('userList update', userList);*/
   });
   
 });
