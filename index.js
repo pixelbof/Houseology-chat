@@ -19,9 +19,12 @@ io.on('connection', function(socket){
 
   socket.on('newUser', function(user){
     currentUser = user.username;
+    var index = userList.indexOf(currentUser);
 
-    userList.push(user.username);
-    io.emit('userList update', userList);
+    if (index > -1) {
+        userList.push(user.username);
+        io.emit('userList update', userList);
+    }
   });
 
   socket.on('userList update', function() {
@@ -31,7 +34,8 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     var index = userList.indexOf(currentUser);
 
-    console.log(currentUser + " has disconnected");
+    console.log(currentUser + " has disconnected")
+    io.emit('chat message', {message: currentUser + " has disconnected!"});
 
     if (index > -1) {
         userList.splice(index, 1);
