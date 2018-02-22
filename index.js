@@ -10,8 +10,9 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-
+  console.log(socket.handshake.query.user + " has connected")
   socket.emit('welcome');
+  socket.emit('userList update', userList)
 
   socket.on('chat message', function(msg){
     io.emit('chat message', msg.message);
@@ -27,15 +28,31 @@ io.on('connection', function(socket){
 
     if (index <= -1) {
         userList.push(user.username);
+
+        var lst = []
+        for (var i = 0; i < userList.length; i++) {
+          if(userList[i] != currentUser) {
+            lst.push(userList[i])
+          }
+        }
+
+        console.log(lst)
+
         io.emit('userList update', userList);
     }
   });
 
   socket.on('userList update', function() {
+
     io.emit('userList update', userList);
   })
 
+  socket.on('reconnect', function() {
+    console.log(currentUser + " is trying to connect again")
+  });
+
   socket.on('disconnect', function(){
+    
    console.log(currentUser + " has disconnected")
   });
   
@@ -43,7 +60,7 @@ io.on('connection', function(socket){
 
 
 //heroku :35465
-http.listen(process.env.PORT || 3000, function(){
+http.listen(process.env.PORT || 3001, function(){
   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
     
