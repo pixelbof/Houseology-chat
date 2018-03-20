@@ -15,7 +15,7 @@ io.on('connection', function(socket){
   socket.emit('userList update', userList)
 
   socket.on('chat message', function(msg){
-    io.emit('chat message', msg.message);
+    io.emit('chat message', {message: msg.message, profilePic: msg.profilePic});
   });
 
   socket.on('userTyping', function(user) {
