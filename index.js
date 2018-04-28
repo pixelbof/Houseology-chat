@@ -1,66 +1,29 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+let app = require('express')();
+let http = require('http').Server(app);
+let io = require('socket.io')(http);
 
-var userList = [];
-var currentUser = "";
+io.on('connection', (socket) => {
+    //io.emit('message', {type:'connected', text: "Chat has successfully connected!"});
+    // Log whenever a user connects
+    socket.on('welcome', function(user){
+        io.emit('message', {type:'new-user', text: user + " has just locked in!"});
+    });
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+    // Log whenever a client disconnects from our websocket server
+    socket.on('disconnect', function(user){
+        console.log("someone left");
+    });
+
+    // When we receive a 'message' event from our client, print out
+    // the contents of that message and then echo it back to our client
+    // using `io.emit()`
+    socket.on('message', (message) => {
+        console.log("Message Received: " + message);
+        io.emit('message', {type:'new-message', text: message});    
+    });
 });
 
-io.on('connection', function(socket){
-  console.log(socket.handshake.query.user + " has connected")
-  socket.emit('welcome');
-  socket.emit('userList update', userList)
-
-  socket.on('chat message', function(msg){
-    io.emit('chat message', {message: msg.message, profilePic: msg.profilePic});
-  });
-
-  socket.on('userTyping', function(user) {
-    io.emit('userTyping', user);
-  });
-
-  socket.on('newUser', function(user){
-    currentUser = user.username;
-    var index = userList.indexOf(currentUser);
-
-    if (index <= -1) {
-        userList.push(user.username);
-
-        var lst = []
-        for (var i = 0; i < userList.length; i++) {
-          if(userList[i] != currentUser) {
-            lst.push(userList[i])
-          }
-        }
-
-        console.log(lst)
-
-        io.emit('userList update', userList);
-    }
-  });
-
-  socket.on('userList update', function() {
-
-    io.emit('userList update', userList);
-  })
-
-  socket.on('reconnect', function() {
-    console.log(currentUser + " is trying to connect again")
-  });
-
-  socket.on('disconnect', function(){
-    
-   console.log(currentUser + " has disconnected")
-  });
-  
+// Initialize our websocket server on port 5000
+http.listen(3001, () => {
+    console.log('started on port 3001');
 });
-
-
-//heroku :35465
-http.listen(process.env.PORT || 3001, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
-    
