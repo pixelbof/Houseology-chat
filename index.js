@@ -4,7 +4,7 @@ const app = express();
 let guestLogins = 0;
 let registeredLogins = 0;
 
-server = app.listen(3001, function(){
+server = app.listen(process.env.PORT || 3001, function(){
     console.log('server is running on port 3001')
 });
 
